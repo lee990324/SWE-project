@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^1.6.8",
+    "chart.js": "^4.4.3",
     "chat.js": "^1.0.2",
     "core-js": "^3.8.3",
     "openssl": "^2.0.0",

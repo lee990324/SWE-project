@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\components"
   ],
-  "SelectedNode": "\\C:\\Users\\joheo\\Source\\Repos\\SWE-project",
+  "SelectedNode": "\\src\\App.vue",
   "PreviewInSolutionExplorer": false
 }
