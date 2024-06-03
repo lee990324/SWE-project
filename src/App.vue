@@ -26,7 +26,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Source Sans Pro', sans-serif;
-  background-color: #f4f4f4;
+  background-color: #808080;
 }
 
 /* 컨테이너 스타일링 */
