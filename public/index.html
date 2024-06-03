@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id" content="297220857012-238ijnjliun8lpbkd52v1jk4bsqpm574.apps.googleusercontent.com.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script>
+    // Facebook SDK 초기화 스크립트
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId: '294745117020895', // 여기에 실제 Facebook 앱 ID를 입력하세요
+        cookie: true,
+        xfbml: true,
+        version: 'v11.0' // 원하는 Facebook API 버전으로 변경하세요
+      });
+    };
+
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+</html>
