@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view @login-success="isLoggedIn = true"></router-view>
+    <div v-if="this.$route.name !== 'login'">
+      <router-link to="/home" class="tab-link" exact>Home</router-link>
+      <router-link to="/myPage" class="tab-link">My</router-link>
+      <router-link to="/favoritePage" class="tab-link">Favorite</router-link>
+    </div>
   </div>
 </template>
 
@@ -84,6 +89,29 @@ input[type="text"], input[type="password"] {
   color: green;
   font-size: 14px;
 }
+
+.button-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #007bff;
+  padding: 10px 0;
+}
+.tab-link {
+  flex-grow: 1;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.tab-link.router-link-exact-active {
+  background-color: #0056b3;
+}
+
 </style>
 
 
