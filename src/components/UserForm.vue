@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="handleSubmit">
     <div>
-      <label for="id">User ID:</label>
-      <input type="text" v-model="user.id" id="id" required>
+      <label for="username">Username:</label>
+      <input type="text" v-model="user.username" id="username" required>
     </div>
     <div>
       <label for="password">Password:</label>
@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       user: {
-        id: '',
+        username: '',
         password: ''
       }
     }
@@ -25,7 +25,7 @@ export default {
   methods: {
     handleSubmit() {
       this.$emit('submit', this.user);
-      this.user.id = '';
+      this.user.username = '';
       this.user.password = '';
     }
   }
