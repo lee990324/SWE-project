@@ -4,9 +4,9 @@
     <div>
       <canvas id="stockChart"></canvas>
     </div>
-    <h1>User Management</h1>
+    <h1 id = "title">User Management</h1>
     <UserForm @submit="handleUserSubmit" />
-    <h1>Stock Management</h1>
+    <h1 id = "title">Stock Management</h1>
     <StockForm @submit="handleStockSubmit" />
     <StockList :stocks="stocks" />
   </div>
@@ -121,4 +121,7 @@ canvas {
   display: block;
   margin: 20px auto;
 }
+#title{
+ width: 800px; 
+} 
 </style>
