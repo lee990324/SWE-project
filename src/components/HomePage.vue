@@ -2,93 +2,70 @@
   <div class="home">
     <h1>Stock Market Dashboard</h1>
     <div>
-        <canvas id="stockChart"></canvas>
-        <p v-if="dataFetchError" style="color: red;">Error fetching stock data: {{ dataFetchError }}</p>
+      <canvas id="kospiChart"></canvas>
+      <canvas id="kosdaqChart"></canvas>
     </div>
-    <h1>Coin Management</h1>
+    <h1>User Management</h1>
     <UserForm @submit="handleUserSubmit" />
-    <CoinForm @submit="handleCoinSubmit" />
-    <CoinList :coins="coins" />
+    <h1>Stock Management</h1>
+    <StockForm @submit="handleStockSubmit" />
+    <StockList :stocks="stocks" />
   </div>
 </template>
 
 <script>
 import { Chart, registerables } from 'chart.js';
-import 'chartjs-adapter-date-fns'; // 날짜 어댑터를 가져옵니다.
-import axios from 'axios';
 import UserForm from '../components/UserForm.vue';
-import CoinForm from '../components/CoinForm.vue';
-import CoinList from '../components/CoinList.vue';
+import StockForm from '../components/StockForm.vue';
+import StockList from '../components/StockList.vue';
 
 Chart.register(...registerables);
 
 export default {
   components: {
     UserForm,
-    CoinForm,
-    CoinList
+    StockForm,
+    StockList
   },
   data() {
     return {
-      stockChart: null,
-      symbol: "AAPL", // 예시로 Apple 주식 사용
-      apiKey: "jz376NF6voi0taiu4m1GxcUbpVMzyZvu", // API 키
-      coins: [],
+      kospiChart: null,
+      kosdaqChart: null,
+      chartData: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        kospiData: [2900, 2910, 2920, 2930, 2940, 2950],
+        kosdaqData: [950, 955, 960, 965, 970, 975]
+      },
       user: {
-        id: '',
+        username: '',
         password: ''
       },
-      dataFetchError: null
+      stocks: []
     };
   },
   mounted() {
-    this.initializeStockChart();
-    this.fetchCoins();
+    this.initializeKospiChart();
+    this.initializeKosdaqChart();
+    this.checkLoginStatus();
   },
   methods: {
-    async initializeStockChart() {
-      const url = `https://financialmodelingprep.com/api/v3/historical-chart/1min/${this.symbol}?apikey=${this.apiKey}`;
-      try {
-        const response = await axios.get(url);
-        if (!response.data || response.data.length === 0) {
-          this.dataFetchError = "No data available";
-          return;
-        }
-        const labels = response.data.map(data => data.date);
-        const openPrices = response.data.map(data => data.open);
-        this.renderChart(labels, openPrices);
-      } catch (error) {
-        this.dataFetchError = error.toString();
-        console.error('Error fetching stock data:', error);
-      }
-    },
-    renderChart(labels, prices) {
-      const ctx = document.getElementById('stockChart').getContext('2d');
-      if (this.stockChart) {
-        this.stockChart.destroy(); // 기존 차트가 있으면 제거
-      }
-      this.stockChart = new Chart(ctx, {
+    initializeKospiChart() {
+      const ctx = document.getElementById('kospiChart').getContext('2d');
+      this.kospiChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
+          labels: this.chartData.labels,
           datasets: [{
-            label: `${this.symbol} Open Prices`,
+            label: 'KOSPI Index',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderColor: 'rgba(255, 99, 132, 1)',
-            data: prices,
+            data: this.chartData.kospiData,
             fill: false,
           }]
         },
         options: {
           responsive: true,
           scales: {
-            x: {
-              type: 'time',
-              time: {
-                parser: 'yyyy-MM-dd HH:mm:ss',
-                tooltipFormat: 'll HH:mm'
-              }
-            },
             y: {
               beginAtZero: false
             }
@@ -96,29 +73,42 @@ export default {
         }
       });
     },
-    async handleUserSubmit(user) {
-        try {
-            await axios.post('http://localhost:3000/api/users', user);
-            this.user = { id: '', password: '' }; // Reset form
-        } catch (error) {
-            console.error('Error submitting user:', error);
+    initializeKosdaqChart() {
+      const ctx = document.getElementById('kosdaqChart').getContext('2d');
+      this.kosdaqChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: this.chartData.labels,
+          datasets: [{
+            label: 'KOSDAQ Index',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            data: this.chartData.kosdaqData,
+            fill: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: false
+            }
+          }
         }
+      });
     },
-    async handleCoinSubmit(coin) {
-        try {
-            await axios.post('http://localhost:3000/api/coins', coin);
-            this.coins.push({ ...coin, currentPrice: null }); // Add to list
-        } catch (error) {
-            console.error('Error submitting coin:', error);
-        }
+    handleUserSubmit(user) {
+      this.user = user;
+      // Optional: Save user to localStorage or perform other actions
     },
-    async fetchCoins() {
-        try {
-            const response = await axios.get('http://localhost:3000/api/coins');
-            this.coins = response.data.map(coin => ({ ...coin, currentPrice: null })); // Initialize price
-        } catch (error) {
-            console.error('Error fetching coins:', error);
-        }
+    handleStockSubmit(stock) {
+      this.stocks.push({ ...stock, currentPrice: null });
+    },
+    checkLoginStatus() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user) {
+        this.user = user;
+      }
     }
   }
 };
@@ -126,13 +116,12 @@ export default {
 
 <style>
 .home {
-    max-width: 800px;
-    margin: auto;
-    text-align: center;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
 }
-
 canvas {
-    display: block;
-    margin: 20px auto;
+  display: block;
+  margin: 20px auto;
 }
 </style>
